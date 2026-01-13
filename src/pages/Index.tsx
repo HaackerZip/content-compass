@@ -1,12 +1,34 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { Sidebar } from '@/components/Sidebar';
+import { Dashboard } from '@/components/Dashboard';
+import { CategoryView } from '@/components/CategoryView';
+import { SettingsView } from '@/components/SettingsView';
+import { SummaryPanel } from '@/components/SummaryPanel';
+import { AddChannelModal } from '@/components/AddChannelModal';
+import { useStore } from '@/store/useStore';
 
 const Index = () => {
+  const { activeView, activeCategoryId } = useStore();
+
+  const renderMainContent = () => {
+    if (activeView === 'settings') {
+      return <SettingsView />;
+    }
+    
+    if (activeView === 'category' && activeCategoryId) {
+      return <CategoryView />;
+    }
+    
+    return <Dashboard />;
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="flex h-screen bg-background overflow-hidden">
+      <Sidebar />
+      <main className="flex-1 overflow-hidden">
+        {renderMainContent()}
+      </main>
+      <SummaryPanel />
+      <AddChannelModal />
     </div>
   );
 };
