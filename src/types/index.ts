@@ -47,8 +47,9 @@ export interface StoreState {
   settings: AppSettings;
   
   // UI State
-  activeView: 'dashboard' | 'category' | 'settings';
+  activeView: 'dashboard' | 'category' | 'channel' | 'settings';
   activeCategoryId: string | null;
+  activeChannelId: string | null;
   selectedVideoId: string | null;
   isAddChannelModalOpen: boolean;
   isSummaryPanelOpen: boolean;
@@ -59,8 +60,9 @@ export interface StoreState {
   dateFilter: 'all' | 'today' | 'week' | 'month';
   
   // Actions
-  setActiveView: (view: 'dashboard' | 'category' | 'settings') => void;
+  setActiveView: (view: 'dashboard' | 'category' | 'channel' | 'settings') => void;
   setActiveCategoryId: (id: string | null) => void;
+  setActiveChannelId: (id: string | null) => void;
   setSelectedVideoId: (id: string | null) => void;
   toggleAddChannelModal: () => void;
   toggleSummaryPanel: () => void;
@@ -90,7 +92,9 @@ export interface StoreState {
   
   // Computed
   getVideosByCategory: (categoryId: string) => Video[];
+  getVideosByChannel: (channelId: string) => Video[];
   getChannelsByCategory: (categoryId: string) => Channel[];
   getNewVideosCount: (categoryId: string) => number;
+  getNewVideosCountByChannel: (channelId: string) => number;
   getTotalNewVideos: () => number;
 }

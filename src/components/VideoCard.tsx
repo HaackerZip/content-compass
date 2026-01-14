@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 interface VideoCardProps {
   video: Video;
   compact?: boolean;
+  showChannel?: boolean;
 }
 
 const statusConfig: Record<VideoStatus, { label: string; className: string }> = {
@@ -15,7 +16,7 @@ const statusConfig: Record<VideoStatus, { label: string; className: string }> = 
   'not-interested': { label: 'No interesa', className: 'badge-not-interested' },
 };
 
-export const VideoCard = ({ video, compact = false }: VideoCardProps) => {
+export const VideoCard = ({ video, compact = false, showChannel = true }: VideoCardProps) => {
   const { setSelectedVideoId, updateVideoStatus } = useStore();
 
   const formatDate = (dateString: string) => {
@@ -74,8 +75,12 @@ export const VideoCard = ({ video, compact = false }: VideoCardProps) => {
         </h3>
 
         <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-          <span className="truncate">{video.channelName}</span>
-          <span>•</span>
+          {showChannel && (
+            <>
+              <span className="truncate">{video.channelName}</span>
+              <span>•</span>
+            </>
+          )}
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {formatDate(video.publishedAt)}

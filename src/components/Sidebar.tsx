@@ -29,11 +29,14 @@ export const Sidebar = () => {
     channels,
     activeView,
     activeCategoryId,
+    activeChannelId,
     setActiveView,
     setActiveCategoryId,
+    setActiveChannelId,
     toggleCategoryExpanded,
     toggleAddChannelModal,
     getNewVideosCount,
+    getNewVideosCountByChannel,
     addCategory,
   } = useStore();
 
@@ -129,19 +132,33 @@ export const Sidebar = () => {
                         className="overflow-hidden"
                       >
                         <div className="pl-8 py-1 space-y-0.5">
-                          {categoryChannels.map((channel) => (
-                            <div
-                              key={channel.id}
-                              className="flex items-center gap-2 px-2 py-1.5 text-sm text-sidebar-foreground hover:text-sidebar-accent-foreground rounded transition-colors"
-                            >
-                              <img
-                                src={channel.avatar}
-                                alt={channel.name}
-                                className="w-5 h-5 rounded-full"
-                              />
-                              <span className="truncate">{channel.name}</span>
-                            </div>
-                          ))}
+                          {categoryChannels.map((channel) => {
+                            const channelNewCount = getNewVideosCountByChannel(channel.id);
+                            return (
+                              <button
+                                key={channel.id}
+                                onClick={() => setActiveChannelId(channel.id)}
+                                className={cn(
+                                  "flex items-center gap-2 px-2 py-1.5 text-sm w-full rounded transition-colors",
+                                  activeChannelId === channel.id
+                                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                    : "text-sidebar-foreground hover:text-sidebar-accent-foreground hover:bg-sidebar-accent/50"
+                                )}
+                              >
+                                <img
+                                  src={channel.avatar}
+                                  alt={channel.name}
+                                  className="w-5 h-5 rounded-full"
+                                />
+                                <span className="truncate flex-1 text-left">{channel.name}</span>
+                                {channelNewCount > 0 && (
+                                  <span className="px-1.5 py-0.5 text-xs font-medium rounded-full bg-primary/20 text-primary">
+                                    {channelNewCount}
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       </motion.div>
                     )}
