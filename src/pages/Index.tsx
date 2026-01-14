@@ -1,17 +1,22 @@
 import { Sidebar } from '@/components/Sidebar';
 import { Dashboard } from '@/components/Dashboard';
 import { CategoryView } from '@/components/CategoryView';
+import { ChannelView } from '@/components/ChannelView';
 import { SettingsView } from '@/components/SettingsView';
 import { SummaryPanel } from '@/components/SummaryPanel';
 import { AddChannelModal } from '@/components/AddChannelModal';
 import { useStore } from '@/store/useStore';
 
 const Index = () => {
-  const { activeView, activeCategoryId } = useStore();
+  const { activeView, activeCategoryId, activeChannelId } = useStore();
 
   const renderMainContent = () => {
     if (activeView === 'settings') {
       return <SettingsView />;
+    }
+    
+    if (activeView === 'channel' && activeChannelId) {
+      return <ChannelView />;
     }
     
     if (activeView === 'category' && activeCategoryId) {

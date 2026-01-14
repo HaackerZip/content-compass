@@ -15,6 +15,7 @@ export const useStore = create<StoreState>()(
       // UI State
       activeView: 'dashboard',
       activeCategoryId: null,
+      activeChannelId: null,
       selectedVideoId: null,
       isAddChannelModalOpen: false,
       isSummaryPanelOpen: false,
@@ -25,8 +26,16 @@ export const useStore = create<StoreState>()(
       dateFilter: 'all',
       
       // UI Actions
-      setActiveView: (view) => set({ activeView: view, activeCategoryId: view === 'dashboard' ? null : get().activeCategoryId }),
-      setActiveCategoryId: (id) => set({ activeCategoryId: id, activeView: id ? 'category' : 'dashboard' }),
+      setActiveView: (view) => set({ activeView: view, activeCategoryId: view === 'dashboard' ? null : get().activeCategoryId, activeChannelId: view === 'dashboard' ? null : get().activeChannelId }),
+      setActiveCategoryId: (id) => set({ activeCategoryId: id, activeChannelId: null, activeView: id ? 'category' : 'dashboard' }),
+      setActiveChannelId: (id) => {
+        if (id) {
+          const channel = get().channels.find(ch => ch.id === id);
+          set({ activeChannelId: id, activeCategoryId: channel?.categoryId || null, activeView: 'channel' });
+        } else {
+          set({ activeChannelId: null, activeView: 'dashboard' });
+        }
+      },
       setSelectedVideoId: (id) => set({ selectedVideoId: id, isSummaryPanelOpen: !!id }),
       toggleAddChannelModal: () => set((state) => ({ isAddChannelModalOpen: !state.isAddChannelModalOpen })),
       toggleSummaryPanel: () => set((state) => ({ isSummaryPanelOpen: !state.isSummaryPanelOpen, selectedVideoId: state.isSummaryPanelOpen ? null : state.selectedVideoId })),
@@ -132,12 +141,21 @@ export const useStore = create<StoreState>()(
         return state.videos.filter((v) => channelIds.includes(v.channelId));
       },
       
+      getVideosByChannel: (channelId) => {
+        return get().videos.filter((v) => v.channelId === channelId);
+      },
+      
       getChannelsByCategory: (categoryId) => {
         return get().channels.filter((ch) => ch.categoryId === categoryId);
       },
       
       getNewVideosCount: (categoryId) => {
         const videos = get().getVideosByCategory(categoryId);
+        return videos.filter((v) => v.status === 'new').length;
+      },
+      
+      getNewVideosCountByChannel: (channelId) => {
+        const videos = get().getVideosByChannel(channelId);
         return videos.filter((v) => v.status === 'new').length;
       },
       
